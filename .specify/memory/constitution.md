@@ -1,50 +1,62 @@
-# [PROJECT_NAME] Constitution
-<!-- Example: Spec Constitution, TaskFlow Constitution, etc. -->
+# ContosoDashboard Constitution
+
+<!--
+Sync Impact Report
+- Version change: 0.1.0 -> 1.0.0
+- Modified principles: N/A -> Security by Default, Training-Grade Simplicity, Test-First and Behavior-Guided Change, Data Integrity and Access Boundaries, Offline-First Learning with Explicit Migration Paths
+- Added sections: Security Requirements, Development Workflow
+- Removed sections: none
+- Deferred items: none
+-->
 
 ## Core Principles
 
-### [PRINCIPLE_1_NAME]
-<!-- Example: I. Library-First -->
-[PRINCIPLE_1_DESCRIPTION]
-<!-- Example: Every feature starts as a standalone library; Libraries must be self-contained, independently testable, documented; Clear purpose required - no organizational-only libraries -->
+### I. Security by Default
+The project MUST treat security as a governing requirement, not as an optional layer. All protected pages and service operations MUST enforce authentication and authorization before exposing data or allowing mutation. User identity MUST be checked against the requested resource, and request parameters, route values, and claims MUST never be trusted as authorization evidence on their own.
 
-### [PRINCIPLE_2_NAME]
-<!-- Example: II. CLI Interface -->
-[PRINCIPLE_2_DESCRIPTION]
-<!-- Example: Every library exposes functionality via CLI; Text in/out protocol: stdin/args → stdout, errors → stderr; Support JSON + human-readable formats -->
+This rule exists because the application is intentionally teaching secure design patterns. A user-visible feature is not complete unless it preserves the principle of least privilege and prevents unauthorized access between users, projects, and task records.
 
-### [PRINCIPLE_3_NAME]
-<!-- Example: III. Test-First (NON-NEGOTIABLE) -->
-[PRINCIPLE_3_DESCRIPTION]
-<!-- Example: TDD mandatory: Tests written → User approved → Tests fail → Then implement; Red-Green-Refactor cycle strictly enforced -->
+### II. Training-Grade Simplicity
+The application MUST favor clear, understandable architecture over unnecessary abstraction. Models, services, pages, and data access logic MUST be readable, purpose-bound, and easy to trace from feature to implementation. Complexity MUST be justified in writing, and shortcuts that obscure security decisions or business ownership are prohibited.
 
-### [PRINCIPLE_4_NAME]
-<!-- Example: IV. Integration Testing -->
-[PRINCIPLE_4_DESCRIPTION]
-<!-- Example: Focus areas requiring integration tests: New library contract tests, Contract changes, Inter-service communication, Shared schemas -->
+This principle keeps the training repository approachable while preserving disciplined engineering habits. The codebase is educational, so clarity is a production-quality behavior in its own right.
 
-### [PRINCIPLE_5_NAME]
-<!-- Example: V. Observability, VI. Versioning & Breaking Changes, VII. Simplicity -->
-[PRINCIPLE_5_DESCRIPTION]
-<!-- Example: Text I/O ensures debuggability; Structured logging required; Or: MAJOR.MINOR.BUILD format; Or: Start simple, YAGNI principles -->
+### III. Test-First and Behavior-Guided Change
+Each significant behavior change MUST be specified and validated before implementation. New or amended flows involving authentication, authorization, project access, task updates, notifications, or user isolation MUST have a clear failing check or explicit verification path before being accepted as complete.
 
-## [SECTION_2_NAME]
-<!-- Example: Additional Constraints, Security Requirements, Performance Standards, etc. -->
+The project MUST prefer tests that validate real user-visible behavior over tests that only assert mock wiring. A feature is not considered complete when it merely compiles; it must operate under the relevant scenario and constraints.
 
-[SECTION_2_CONTENT]
-<!-- Example: Technology stack requirements, compliance standards, deployment policies, etc. -->
+### IV. Data Integrity and Access Boundaries
+All data operations MUST respect the repository's ownership and permission model. Users MUST only see and modify data they are explicitly authorized to access, and service methods MUST enforce project membership, task ownership, and role constraints even if a UI layer is bypassed or a request is tampered with.
 
-## [SECTION_3_NAME]
-<!-- Example: Development Workflow, Review Process, Quality Gates, etc. -->
+This rule is non-negotiable because contamination across user or project boundaries is a core risk in dashboard applications. Validation of IDs, statuses, and ownership claims is mandatory before any write or read operation proceeds.
 
-[SECTION_3_CONTENT]
-<!-- Example: Code review requirements, testing gates, deployment approval process, etc. -->
+### V. Offline-First Learning with Explicit Migration Paths
+The application MUST remain runnable offline without cloud dependencies. Local data storage, mock authentication, and seed data are allowed for training purposes, but infrastructure boundaries MUST be explicit so the project can later migrate to Azure or other production systems without rewriting the business logic.
+
+This architecture supports the training goal of demonstrating safe abstraction while keeping the app usable in restricted or isolated environments.
+
+## Security Requirements
+The project MUST keep security requirements visible in both code and documentation. All protected pages MUST use the authorization model, and service-layer checks MUST be present wherever a user can access or mutate operational data. Authorization decisions MUST not rely on a single UI gate alone.
+
+The project MUST also maintain explicit guidance around training-safe security design. Mock authentication is acceptable only for educational contexts, and production patterns such as password hashing, MFA, OAuth, TLS enforcement, and audit logging MUST be documented as required follow-on work outside this repository's scope.
+
+## Development Workflow
+All repository changes MUST be evaluated against this constitution before merge. New work MUST begin with a clear requirement, a defined verification path, and a reminder of the application's security, user-isolation, and offline-training constraints. In code review, maintainers MUST confirm that the change preserves the repository's access boundaries and does not weaken the training-safe security model.
+
+The workflow MUST also preserve a simple progression: understand the requirement, validate the behavior, implement the smallest correct change, and confirm the relevant outputs still satisfy the project's governance rules.
 
 ## Governance
-<!-- Example: Constitution supersedes all other practices; Amendments require documentation, approval, migration plan -->
+This constitution supersedes informal practices for this repository. Amendments require a documented rationale, a sync-impact summary, and a review of affected security, access-control, and verification requirements before approval. Any change that modifies principle intent, access rules, or required validation behavior MUST be reflected in the constitution and versioned according to the policy below.
 
-[GOVERNANCE_RULES]
-<!-- Example: All PRs/reviews must verify compliance; Complexity must be justified; Use [GUIDANCE_FILE] for runtime development guidance -->
+Versioning policy:
+- MAJOR: backward-incompatible governance changes or principle removals or redefinitions
+- MINOR: a new principle or section, or materially expanded guidance
+- PATCH: clarifying wording, typo fixes, and non-semantic refinements
 
-**Version**: [CONSTITUTION_VERSION] | **Ratified**: [RATIFICATION_DATE] | **Last Amended**: [LAST_AMENDED_DATE]
-<!-- Example: Version: 2.1.1 | Ratified: 2025-06-13 | Last Amended: 2025-07-16 -->
+Compliance review expectations:
+- Security and permission checks must be verified before merging changes that affect read/write flows
+- User-isolation and role-based access requirements must remain intact for all dashboard features
+- Training constraints and offline-first requirements must be preserved unless the project explicitly changes scope
+
+**Version**: 1.0.0 | **Ratified**: 2026-09-15 | **Last Amended**: 2026-09-15
