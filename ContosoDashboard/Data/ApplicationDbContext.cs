@@ -17,6 +17,9 @@ public class ApplicationDbContext : DbContext
     public DbSet<Notification> Notifications { get; set; } = null!;
     public DbSet<ProjectMember> ProjectMembers { get; set; } = null!;
     public DbSet<Announcement> Announcements { get; set; } = null!;
+    public DbSet<Document> Documents { get; set; } = null!;
+    public DbSet<DocumentShare> DocumentShares { get; set; } = null!;
+    public DbSet<AuditEvent> AuditEvents { get; set; } = null!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -41,6 +44,36 @@ public class ApplicationDbContext : DbContext
             .HasForeignKey(p => p.ProjectManagerId)
             .OnDelete(DeleteBehavior.Restrict);
 
+        modelBuilder.Entity<User>()
+            .HasMany(u => u.UploadedDocuments)
+            .WithOne(d => d.UploadedByUser)
+            .HasForeignKey(d => d.UploadedByUserId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<Project>()
+            .HasMany(p => p.Documents)
+            .WithOne(d => d.Project)
+            .HasForeignKey(d => d.ProjectId)
+            .OnDelete(DeleteBehavior.SetNull);
+
+        modelBuilder.Entity<Document>()
+            .HasMany(d => d.Shares)
+            .WithOne(s => s.Document)
+            .HasForeignKey(s => s.DocumentId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<User>()
+            .HasMany(u => u.SharedDocuments)
+            .WithOne(s => s.SharedWithUser)
+            .HasForeignKey(s => s.SharedWithUserId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<User>()
+            .HasMany(u => u.CreatedAuditEvents)
+            .WithOne(a => a.User)
+            .HasForeignKey(a => a.UserId)
+            .OnDelete(DeleteBehavior.Restrict);
+
         // Configure indexes for performance
         modelBuilder.Entity<TaskItem>()
             .HasIndex(t => t.AssignedUserId);
@@ -59,6 +92,21 @@ public class ApplicationDbContext : DbContext
 
         modelBuilder.Entity<Notification>()
             .HasIndex(n => new { n.UserId, n.IsRead });
+
+        modelBuilder.Entity<Document>()
+            .HasIndex(d => d.UploadedByUserId);
+
+        modelBuilder.Entity<Document>()
+            .HasIndex(d => d.ProjectId);
+
+        modelBuilder.Entity<Document>()
+            .HasIndex(d => d.Category);
+
+        modelBuilder.Entity<DocumentShare>()
+            .HasIndex(ds => ds.DocumentId);
+
+        modelBuilder.Entity<DocumentShare>()
+            .HasIndex(ds => ds.SharedWithUserId);
 
         modelBuilder.Entity<User>()
             .HasIndex(u => u.Email)
